@@ -1,0 +1,52 @@
+* What is this about
+:PROPERTIES:
+:CREATED:  [2019-11-07 Thu 22:34]
+:END:
+
+This repository is an exemplary example for testing a specific
+scenario in Scala: sometimes Scala developers end up writing an object
+for a class like the following
+
+#+begin_src scala
+case class A()
+object A {
+  val a = "a"
+  val b = Some(Right(List(1)))
+  val c = None
+  val d = Some(Left("left"))
+
+  val all = List(b,c,d)
+}
+#+end_src
+
+With few values this pattern is possible to manage (although an
+enumeration would be better!). However time makes this slowly become:
+
+#+begin_src scala
+case class A()
+object A {
+  val a = "a"
+  val b = Some(Right(List(1)))
+  val c = None
+  val d = Some(Left("left"))
+  ...
+  val y = None
+  val z = Some(Left("someOtherLeft"))
+
+  val all = List(b,c,d,...,y) // Argh! The "z" is missing and nobody noticed!
+}
+#+end_src
+
+When the list of constants in the companion object becomes humongous
+it is easy to miss the addition to the ~all~ constant.
+
+Ideally a test utility should save the day and make sure that all vals
+are included in the list. You can find this utility in
+~./src/test/scala/example/Utils.scala~. 
+
+* Usage
+:PROPERTIES:
+:CREATED:  [2019-11-07 Thu 22:43]
+:END:
+
+Running ~sbt test~ you will see the desired test case failing.
